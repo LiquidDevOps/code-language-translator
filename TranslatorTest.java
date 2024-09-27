@@ -3,6 +3,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class TranslatorTest {
+
     private Translator translator;
 
     @BeforeEach
@@ -19,12 +20,31 @@ public class TranslatorTest {
     @Test
     public void testTranslateUnsupportedLanguages() {
         String result = translator.translate("System.out.println('Hello, World!');", "Java", "Ruby");
-        assertEquals("Translation not supported for the selected languages.", result);
+        assertEquals("Error: Unsupported target language: Ruby", result);
     }
 
     @Test
     public void testTranslateSameLanguage() {
         String result = translator.translate("print('Hello, World!')", "Python", "Python");
         assertEquals("Translating from Python to Python: print('Hello, World!')", result);
+    }
+
+    @Test
+    public void testNoCodeProvided() {
+        String result = translator.translate("", "Python", "Java");
+        assertEquals("Error: No code provided for translation.", result);
+    }
+
+    @Test
+    public void testUnsupportedSourceLanguage() {
+        String result = translator.translate("puts 'Hello, World!'", "Ruby", "Java");
+        assertEquals("Error: Unsupported source language: Ruby", result);
+    }
+
+    @Test
+    public void testAddLanguageAndTranslate() {
+        translator.addLanguage("Ruby", "Ruby code");
+        String result = translator.translate("puts 'Hello, World!'", "Ruby", "JavaScript");
+        assertEquals("Translating from Ruby to JavaScript: puts 'Hello, World!'", result);
     }
 }
